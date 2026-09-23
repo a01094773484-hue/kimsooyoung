@@ -1,0 +1,2 @@
+import { PlaceholderPage } from '@/components/investlab';
+export default function AssetDetailPage({ params }: { params: { symbol: string } }) { return <PlaceholderPage title={`${params.symbol} 투자 대상 상세`} description="선택한 자산의 정보와 과거 데이터를 확인하는 페이지입니다. 상세 데이터는 준비 중이며, 현재는 이 자산으로 가설을 작성할 수 있습니다." primaryHref={`/hypothesis?asset=${encodeURIComponent(params.symbol)}`} primaryLabel="이 자산으로 가설 작성" secondaryHref="/assets" secondaryLabel="자산 목록" />; }
