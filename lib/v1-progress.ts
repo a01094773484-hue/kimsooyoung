@@ -30,7 +30,7 @@ export type V1Module = {
 
 export const v1ProgressMeta = {
   version: 'V1',
-  updatedAt: '2026-09-16',
+  updatedAt: '2026-09-30',
   basis:
     '별도 V1 설계·로드맵 문서가 없어 현재 라우팅, 구현 코드, .bolt 설계 지침을 기준으로 등록했습니다.',
 };
@@ -248,13 +248,14 @@ export const v1Modules: V1Module[] = [
       {
         id: 'simulation-settings',
         label: '투자 금액·기간·조건 설정',
-        verification: 'fail',
-        evidence: '소스 점검: /simulation/settings가 PlaceholderPage 상태',
+        verification: 'pass',
+        evidence: '브라우저: 6개 자산, 투자금, 상승·하락·보합 조건 입력과 실행 확인',
       },
       {
         id: 'simulation-engine',
-        label: '과거 데이터 기반 시뮬레이션 실행',
-        verification: 'untested',
+        label: '정적 기준가·사용자 조건 기반 교육용 계산 실행',
+        verification: 'pass',
+        evidence: '자동 테스트 5건 및 브라우저: 테슬라 상승, 엔비디아 하락, 비트코인 보합 계산 확인',
       },
       {
         id: 'simulation-errors',
@@ -271,6 +272,7 @@ export const v1Modules: V1Module[] = [
     references: [
       { label: '결과 라우트', path: 'app/simulation/result/page.tsx' },
       { label: '결과 예시 UI', path: 'components/investlab.tsx' },
+      { label: '교육용 리포트 매핑', path: 'lib/simulation-report.ts' },
     ],
     checklist: [
       {
@@ -288,13 +290,44 @@ export const v1Modules: V1Module[] = [
       {
         id: 'results-page',
         label: '전용 결과 페이지 구현',
-        verification: 'fail',
-        evidence: '소스 점검: /simulation/result가 PlaceholderPage 상태',
+        verification: 'pass',
+        evidence: '브라우저: 자산·투자금·기준가·시나리오·평가금액·손익·수익률·계산 시각 표시 확인',
       },
       {
         id: 'results-dynamic',
         label: '실행 조건에 따른 동적 결과 표시',
-        verification: 'untested',
+        verification: 'pass',
+        evidence: '브라우저: +10%, -8%, 0% 시나리오별 결과 변화 확인',
+      },
+      {
+        id: 'results-persistence',
+        label: '결과 저장·새로고침 복원·대시보드 반영',
+        verification: 'pass',
+        evidence: '브라우저: 서로 다른 결과 3건 저장, 대시보드 표시와 상세 새로고침 유지 확인',
+      },
+      {
+        id: 'results-history-detail',
+        label: '고유 ID별 저장 결과 상세 조회·잘못된 ID·기존 기록 호환',
+        verification: 'pass',
+        evidence: '자동 테스트 6건 및 브라우저: BTC·NVDA·TSLA 고유 상세, 잘못된 ID 안내, 390px 무가로스크롤 확인',
+      },
+      {
+        id: 'results-history-management',
+        label: '전체 기록 검색·필터·정렬·개별 삭제 및 Dashboard 동기화',
+        verification: 'pass',
+        evidence: '브라우저: 테스트용 BTC 1건 삭제, 새로고침 유지, Dashboard 3→2건, 삭제 상세 Not Found 확인',
+      },
+      {
+        id: 'results-comparison',
+        label: '저장 결과 2건 선택 및 교육용 조건·계산값 비교',
+        verification: 'pass',
+        evidence: '자동 테스트 및 브라우저: 서로 다른 자산과 TSLA 상승 10%·하락 8% 동일 자산 비교, 잘못된 비교 방어, 390px 무가로스크롤 확인',
+      },
+      {
+        id: 'results-print-report',
+        label: '저장 결과 상세·비교 교육용 인쇄/PDF 리포트',
+        verification: 'pass',
+        evidence: '자동 테스트 8건 및 브라우저: 저장값 리포트 매핑, 인쇄 버튼, A4 print CSS, 잘못된 ID·Legacy fallback, 390px 무가로스크롤 확인',
       },
       {
         id: 'results-ai',

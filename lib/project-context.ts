@@ -7,7 +7,9 @@ export const PROJECT_ASSISTANT_CONTEXT = `
 - 메인에서 삼성전자, 테슬라, 엔비디아, 애플, 비트코인, 이더리움을 검색하고 선택할 수 있음.
 - /hypothesis에서 자산, 가설 문장, 예상 방향, 검증 기간, 목표 변화율을 입력해 검증 계획을 만들 수 있음.
 - 메인 화면에서 정적 시뮬레이션 결과 예시와 가설 예시를 볼 수 있음.
-- /simulation/settings 및 /simulation/result는 아직 준비 중인 화면이며 실제 백테스트 계산 엔진은 구현되지 않음.
+- /simulation/settings에서 6개 자산과 투자금, 상승·하락·보합 조건을 입력해 교육용 단순 시뮬레이션을 실행할 수 있음.
+- /simulation/result에서 가상 평가금액·손익·수익률을 확인하고 결과를 브라우저에 저장할 수 있으며, /simulation/result/[id]에서 저장 당시 결과를 다시 볼 수 있음. 이는 과거 백테스트나 미래 예측이 아님.
+- /simulation/history에서 저장 기록을 검색·필터·정렬·개별 삭제하고 2건을 선택해 /simulation/compare에서 교육용 계산값 차이를 비교할 수 있음.
 - 서비스는 투자 권유가 아니라 교육 목적이며 실제 수익을 보장하지 않음.
 주요 메뉴: 서비스 소개, 투자해보기, 학습 콘텐츠, 요금제, 자산 목록, 가설 작성.
 응답 원칙:
@@ -27,6 +29,8 @@ export const PAGE_LABELS: Record<string, string> = {
   '/simulation': '투자해보기',
   '/simulation/settings': '가상투자 조건 설정',
   '/simulation/result': '시뮬레이션 결과',
+  '/simulation/history': '시뮬레이션 기록',
+  '/simulation/compare': '시뮬레이션 비교',
   '/learn': '학습 콘텐츠',
   '/pricing': '요금제',
   '/mypage': '마이페이지',

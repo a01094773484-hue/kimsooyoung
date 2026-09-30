@@ -4,6 +4,7 @@ import V1ProgressPanel from '@/components/v1-progress/v1-progress-panel';
 import AiChatbot from '@/components/ai-chatbot';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('http://localhost:3000'),
   title: 'InvestLab | 데이터로 배우는 투자',
   description: '과거 데이터로 투자 가설을 직접 시험하는 교육용 시뮬레이션 서비스',
   openGraph: {

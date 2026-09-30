@@ -6,6 +6,7 @@ import { ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, ClipboardList, Sea
 import { Footer, Header } from '@/components/investlab';
 import { loadUserDataState, type SavedHypothesis } from '@/lib/investlab-storage';
 import { assets } from '@/lib/mock-data';
+import { loadSimulations, type SavedSimulation } from '@/lib/simulation-storage';
 
 const periodLabels = { '1m': '1개월', '3m': '3개월', '6m': '6개월', '1y': '1년' } as const;
 
@@ -22,6 +23,7 @@ function hypothesisHref(item: SavedHypothesis) {
 
 export default function InvestLabDashboard() {
   const [items, setItems] = useState<SavedHypothesis[]>([]);
+  const [simulations, setSimulations] = useState<SavedSimulation[]>([]);
   const [hasDraft, setHasDraft] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,6 +32,7 @@ export default function InvestLabDashboard() {
     setLoading(true);
     const result = loadUserDataState();
     setItems(result.data.hypotheses);
+    setSimulations(loadSimulations());
     setHasDraft(Boolean(result.data.draft?.statement.trim()));
     setError(result.error ?? '');
     setLoading(false);
@@ -49,14 +52,14 @@ export default function InvestLabDashboard() {
   const stats = useMemo(() => {
     const uniqueAssets = new Set(items.map((item) => item.selectedSymbol)).size;
     const rising = items.filter((item) => item.direction === 'rise').length;
-    return { total: items.length, uniqueAssets, rising, falling: items.length - rising };
-  }, [items]);
+    return { total: items.length, uniqueAssets, rising, simulations: simulations.length };
+  }, [items, simulations]);
 
   const cards = [
     { label: '저장한 검증 계획', value: stats.total, note: '저장된 전체 가설', href: '#recent-activity', icon: ClipboardList },
     { label: '시험한 자산', value: stats.uniqueAssets, note: '중복을 제외한 자산 수', href: '/assets', icon: BarChart3 },
     { label: '상승 가설', value: stats.rising, note: '상승을 예상한 계획', href: '#recent-activity', icon: ArrowUpRight },
-    { label: '하락 가설', value: stats.falling, note: '하락을 예상한 계획', href: '#recent-activity', icon: ArrowDownRight },
+    { label: '저장한 시뮬레이션', value: stats.simulations, note: '교육용 계산 결과', href: '#recent-simulations', icon: ArrowDownRight },
   ];
 
   return (
@@ -111,6 +114,7 @@ export default function InvestLabDashboard() {
                 <Link href="/simulation/result"><BarChart3 size={19} /><span><strong>결과 화면</strong><small>시뮬레이션 결과 화면으로 이동</small></span><ArrowRight size={16} /></Link>
               </aside>
             </section>
+            <section id="recent-simulations" className="container dashboard-panel dashboard-simulations"><div className="dashboard-panel-heading"><div><span className="eyebrow">최근 시뮬레이션</span><h2>저장한 교육용 계산 결과</h2></div><div className="dashboard-panel-links"><Link href="/simulation/history" className="text-link">전체 기록 보기 <ArrowRight size={14} /></Link><Link href="/simulation/settings" className="text-link">새로 실행 <ArrowRight size={14} /></Link></div></div>{simulations.length === 0 ? <div className="dashboard-empty"><BarChart3 size={24} /><strong>아직 저장된 시뮬레이션이 없습니다.</strong><p>교육용 조건을 계산하고 결과를 저장해보세요.</p><Link href="/simulation/settings" className="primary-button">시뮬레이션 시작 <ArrowRight size={15} /></Link></div> : <div className="dashboard-activity-list">{simulations.slice(0, 5).map((item) => <Link key={item.id} href={`/simulation/result/${encodeURIComponent(item.id)}`} className="dashboard-activity-item"><span className="asset-icon" style={{ background: item.asset.color }}>{item.asset.icon}</span><div><strong>{item.asset.name}</strong><p>{item.scenario === 'rise' ? '상승' : item.scenario === 'fall' ? '하락' : '보합'} 시나리오 · {item.returnRate > 0 ? '+' : ''}{item.returnRate}%</p><small>가상 평가금액 {new Intl.NumberFormat('ko-KR').format(item.estimatedValue)}원</small></div><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString('ko-KR')}</time><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>}</section>
           </>
         )}
       </main>
