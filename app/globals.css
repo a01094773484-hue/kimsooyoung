@@ -730,6 +730,25 @@ ul { list-style: none; }
 .period-difference strong { color: var(--ink); font-size: 19px; }
 .period-page .education-warning { margin-top: 14px; }
 .period-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.study-input-card, .study-summary, .study-edit-card { display: grid; gap: 9px; margin-bottom: 14px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.study-input-card h2 { margin: 5px 0 0; color: var(--ink); font-size: 21px; }
+.study-input-card p, .study-summary p { margin: 0; color: var(--muted); line-height: 1.65; }
+.study-input-card label, .study-edit-card label { margin-top: 5px; color: var(--ink-2); font-weight: 800; }
+.study-input-card textarea, .study-edit-card textarea { width: 100%; min-height: 92px; resize: vertical; padding: 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); font: inherit; line-height: 1.55; }
+.study-reflection-card textarea, .study-edit-card textarea:last-of-type { min-height: 112px; }
+.study-input-card small, .study-edit-card small { justify-self: end; color: var(--muted); }
+.study-input-card textarea:focus-visible, .study-edit-card textarea:focus-visible { outline: 3px solid rgba(40, 121, 250, .35); outline-offset: 2px; }
+.study-save-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+.study-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 220px); gap: 12px; margin-bottom: 18px; }
+.study-toolbar > label { display: grid; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 750; }
+.study-toolbar input, .study-toolbar select { min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
+.study-list h2 { margin: 12px 0 7px; overflow-wrap: anywhere; color: var(--ink); font-size: 18px; }
+.study-card-reflection { min-height: 24px; margin: 0 0 12px; overflow-wrap: anywhere; color: var(--muted); }
+.study-detail-page { min-height: 72vh; padding: 58px 0 80px; background: linear-gradient(180deg, var(--bg-blue) 0%, #fff 44%); }
+.study-summary { margin-bottom: 14px; }
+.study-summary time { color: var(--muted); font-size: 12px; }
+.study-edit-card { margin-bottom: 14px; }
+.study-snapshot-grid { margin-top: 0; }
 
 @page { size: A4 portrait; margin: 14mm; }
 @media print {
@@ -761,6 +780,14 @@ ul { list-style: none; }
   .compare-page .compare-record dl div { grid-template-columns: 29mm minmax(0, 1fr); padding: 2mm 0; }
   .compare-page .compare-record dt, .compare-page .compare-record dd { font-size: 9pt; }
   .compare-page > .education-warning { break-inside: avoid; margin-top: 5mm; border: 1px solid #777; background: #fff !important; }
+  .study-detail-page > :not(.study-print-report) { display: none !important; }
+  .study-print-report .study-print-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4mm; break-inside: avoid; }
+  .study-print-report .study-print-period { margin-top: 8mm; padding: 4mm; border: 1px solid #777; break-inside: avoid; }
+  .study-print-report .study-print-period dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .study-print-report .study-print-range { margin-bottom: 3mm; font-weight: 700; }
+  .study-print-report .study-print-copy { white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+  .study-print-report .study-print-education { margin-top: 6mm; border-width: 2px; }
+  .study-print-report .study-print-snapshot { margin-top: 8mm; }
 }
 
 /* ===== Responsive ===== */
@@ -806,6 +833,11 @@ ul { list-style: none; }
   .period-result-card dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .period-actions { flex-direction: column; }
   .period-actions > * { width: 100%; justify-content: center; min-height: 44px; }
+  .study-input-card, .study-summary, .study-edit-card { padding: 17px; }
+  .study-save-actions { flex-direction: column; }
+  .study-save-actions > * { width: 100%; justify-content: center; min-height: 44px; }
+  .study-toolbar { grid-template-columns: 1fr; }
+  .study-detail-page { padding: 34px 0 52px; }
   .history-page, .compare-page { padding: 34px 0 52px; }
   .history-heading h1 { font-size: 27px; line-height: 1.28; }
   .history-toolbar { grid-template-columns: 1fr; }

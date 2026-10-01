@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, ClipboardList, Search, Sparkles } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, BookOpen, ClipboardList, Search, Sparkles } from 'lucide-react';
 import { Footer, Header } from '@/components/investlab';
 import { loadUserDataState, type SavedHypothesis } from '@/lib/investlab-storage';
 import { assets } from '@/lib/mock-data';
 import { loadSimulations, type SavedSimulation } from '@/lib/simulation-storage';
+import { loadPeriodStudies, PERIOD_STUDY_CHANGED_EVENT, type PeriodStudyRecord } from '@/lib/period-study-storage';
 
 const periodLabels = { '1m': '1개월', '3m': '3개월', '6m': '6개월', '1y': '1년' } as const;
 
@@ -24,6 +25,7 @@ function hypothesisHref(item: SavedHypothesis) {
 export default function InvestLabDashboard() {
   const [items, setItems] = useState<SavedHypothesis[]>([]);
   const [simulations, setSimulations] = useState<SavedSimulation[]>([]);
+  const [studies, setStudies] = useState<PeriodStudyRecord[]>([]);
   const [hasDraft, setHasDraft] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -33,6 +35,7 @@ export default function InvestLabDashboard() {
     const result = loadUserDataState();
     setItems(result.data.hypotheses);
     setSimulations(loadSimulations());
+    setStudies(loadPeriodStudies());
     setHasDraft(Boolean(result.data.draft?.statement.trim()));
     setError(result.error ?? '');
     setLoading(false);
@@ -43,9 +46,11 @@ export default function InvestLabDashboard() {
     const syncStorage = () => refresh();
     window.addEventListener('storage', syncStorage);
     window.addEventListener('focus', syncStorage);
+    window.addEventListener(PERIOD_STUDY_CHANGED_EVENT, syncStorage);
     return () => {
       window.removeEventListener('storage', syncStorage);
       window.removeEventListener('focus', syncStorage);
+      window.removeEventListener(PERIOD_STUDY_CHANGED_EVENT, syncStorage);
     };
   }, [refresh]);
 
@@ -115,6 +120,7 @@ export default function InvestLabDashboard() {
               </aside>
             </section>
             <section id="recent-simulations" className="container dashboard-panel dashboard-simulations"><div className="dashboard-panel-heading"><div><span className="eyebrow">최근 시뮬레이션</span><h2>저장한 교육용 계산 결과</h2></div><div className="dashboard-panel-links"><Link href="/simulation/history" className="text-link">전체 기록 보기 <ArrowRight size={14} /></Link><Link href="/simulation/settings" className="text-link">새로 실행 <ArrowRight size={14} /></Link></div></div>{simulations.length === 0 ? <div className="dashboard-empty"><BarChart3 size={24} /><strong>아직 저장된 시뮬레이션이 없습니다.</strong><p>교육용 조건을 계산하고 결과를 저장해보세요.</p><Link href="/simulation/settings" className="primary-button">시뮬레이션 시작 <ArrowRight size={15} /></Link></div> : <div className="dashboard-activity-list">{simulations.slice(0, 5).map((item) => <Link key={item.id} href={`/simulation/result/${encodeURIComponent(item.id)}`} className="dashboard-activity-item"><span className="asset-icon" style={{ background: item.asset.color }}>{item.asset.icon}</span><div><strong>{item.asset.name}</strong><p>{item.scenario === 'rise' ? '상승' : item.scenario === 'fall' ? '하락' : '보합'} 시나리오 · {item.returnRate > 0 ? '+' : ''}{item.returnRate}%</p><small>가상 평가금액 {new Intl.NumberFormat('ko-KR').format(item.estimatedValue)}원</small></div><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString('ko-KR')}</time><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>}</section>
+            <section id="recent-studies" className="container dashboard-panel dashboard-simulations"><div className="dashboard-panel-heading"><div><span className="eyebrow">기간 비교 학습 기록 · {studies.length}건</span><h2>최근 저장한 교육용 구간 관찰</h2></div><div className="dashboard-panel-links"><Link href="/studies" className="text-link">전체 학습 기록 <ArrowRight size={14} /></Link><Link href="/assets/TSLA" className="text-link">기간 비교 시작 <ArrowRight size={14} /></Link></div></div>{studies.length === 0 ? <div className="dashboard-empty"><BookOpen size={24} /><strong>아직 저장한 기간 비교 학습 기록이 없습니다.</strong><p>TSLA 예시 구간을 비교하고 학습 가설과 메모를 저장해보세요.</p><Link href="/assets/TSLA" className="primary-button">기간 비교 시작 <ArrowRight size={15} /></Link></div> : <div className="dashboard-activity-list">{studies.slice(0, 3).map((item) => <Link key={item.id} href={`/studies/${encodeURIComponent(item.id)}`} className="dashboard-activity-item"><span className="asset-icon" style={{ background: '#e22c37' }}>T</span><div><strong>{item.assetName} ({item.assetSymbol})</strong><p>{item.hypothesis || '가설 없음'}</p><small>Period A {item.periodA.startIndex + 1}~{item.periodA.endIndex + 1} · Period B {item.periodB.startIndex + 1}~{item.periodB.endIndex + 1}</small></div><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString('ko-KR')}</time><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>}</section>
           </>
         )}
       </main>
